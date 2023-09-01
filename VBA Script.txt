@@ -1,0 +1,167 @@
+Sub ColumnHeadings()
+
+    For Each ws In Worksheets
+    
+        Dim WorksheetName As String
+
+        
+        WorksheetName = ws.Name
+                        
+        ws.Cells(1, 9).Value = "Ticker"
+        
+        ws.Cells(1, 10).Value = "Yearly Change"
+        
+        ws.Cells(1, 11).Value = "Percent Change"
+        
+        ws.Cells(1, 12).Value = "Total Stock Volume"
+        
+        ws.Cells(1, 16).Value = "Ticker"
+        
+        ws.Cells(1, 17).Value = "Value"
+        
+        ws.Cells(2, 15).Value = "Greatest % Increase"
+        
+        ws.Cells(3, 15).Value = "Greatest % Decrease"
+        
+        ws.Cells(4, 15).Value = "Greatest Total Volume"
+                
+    With ws.Range("I1:Q1").Font
+    
+        .Bold = True
+        
+    End With
+    
+    Next ws
+    
+End Sub
+Sub StockVolume()
+    
+    For Each ws In Worksheets
+    
+        Dim WorksheetName As String
+
+        WorksheetName = ws.Name
+        
+    Dim Total As Double
+    Dim Row As Long
+        
+    Total = 0
+    Row = 2
+    Start = 2
+    
+    lastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+    
+    For i = 2 To lastRow
+    
+        If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+            
+            ws.Range("I" & Row).Value = ws.Cells(i, 1).Value
+            
+            Total = Total + ws.Cells(i, 7).Value
+            
+            ws.Range("L" & Row).Value = Total
+            
+            OpenPrice = ws.Cells(Start, 3).Value
+                
+            ClosePrice = ws.Cells(i, 6).Value
+                
+            YearlyChange = ClosePrice - OpenPrice
+                
+            PercentChange = YearlyChange / OpenPrice
+                
+            YearlyChange = ws.Range("J" & Row).Value
+                
+            PercentChange = ws.Range("K" & Row).Value
+                
+            ws.Range("K" & Row).NumberFormat = "0.00%"
+            
+            Start = i + 1
+                
+    
+        Total = 0
+        Row = Row + 1
+        
+        Else
+        
+        Total = Total + ws.Cells(i, 7).Value
+            
+        End If
+        
+        
+        If ws.Range("J" & Row).Value < 0 Then
+        
+        ws.Range("J" & Row).Interior.ColorIndex = 3
+        
+        Else
+        
+        ws.Range("J" & Row).Interior.ColorIndex = 4
+        
+        End If
+        
+        
+    Next i
+    
+    Next ws
+    
+End Sub
+
+Sub Summary()
+      
+    Dim ws As Worksheet
+        
+    Dim Rng As Range
+    
+    Dim RngL As Range
+        
+    Dim MaxValue As Double
+    
+    Dim MinValue As Double
+    
+    Dim MaxTotalVolume As Double
+    
+    Dim PercentIncrease As Range
+    
+    Dim PercentDecrease As Range
+    
+    Dim GreatestTotalVolume As Range
+        
+    Dim tickerCell As String
+            
+    Dim lastRow As Long
+        
+    
+    For Each ws In Worksheets
+        
+        lastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+        
+        Set Rng = ws.Range("K2:K" & lastRow)
+        
+        MaxValue = Application.WorksheetFunction.Max(Rng)
+        
+        Set PercentIncrease = ws.Range("Q2")
+        
+        PercentIncrease.Value = MaxValue
+        
+        
+        MinValue = Application.WorksheetFunction.Min(Rng)
+        
+        Set PercentDecrease = ws.Range("Q3")
+        
+        PercentDecrease.Value = MinValue
+        
+        ws.Range("Q2:Q3").NumberFormat = "0.00%"
+        
+        
+        Set RngL = ws.Range("L2:L" & lastRow)
+        
+        MaxTotalVolume = Application.WorksheetFunction.Max(RngL)
+              
+        Set GreatestTotalVolume = ws.Range("Q4")
+        
+        GreatestTotalVolume.Value = MaxTotalVolume
+            
+
+    Next ws
+
+End Sub
+
