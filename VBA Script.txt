@@ -44,6 +44,8 @@ Sub StockVolume()
         
     Dim Total As Double
     Dim Row As Long
+   
+    
         
     Total = 0
     Row = 2
@@ -119,48 +121,66 @@ Sub Summary()
     
     Dim MaxTotalVolume As Double
     
-    Dim PercentIncrease As Range
+    Dim PercentIncrease As Double
     
-    Dim PercentDecrease As Range
+    Dim PercentDecrease As Double
     
-    Dim GreatestTotalVolume As Range
-        
-    Dim tickerCell As String
-            
+    Dim GreatestTotalVolume As LongLong
+    
+    Dim IncreaseTicker As String
+    
+    Dim DecreaseTicker As String
+    
+    Dim VolumeTicker As String
+              
     Dim lastRow As Long
         
     
     For Each ws In Worksheets
         
-        lastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
-        
-        Set Rng = ws.Range("K2:K" & lastRow)
-        
-        MaxValue = Application.WorksheetFunction.Max(Rng)
-        
-        Set PercentIncrease = ws.Range("Q2")
-        
-        PercentIncrease.Value = MaxValue
-        
-        
-        MinValue = Application.WorksheetFunction.Min(Rng)
-        
-        Set PercentDecrease = ws.Range("Q3")
-        
-        PercentDecrease.Value = MinValue
-        
-        ws.Range("Q2:Q3").NumberFormat = "0.00%"
-        
-        
-        Set RngL = ws.Range("L2:L" & lastRow)
-        
-        MaxTotalVolume = Application.WorksheetFunction.Max(RngL)
-              
-        Set GreatestTotalVolume = ws.Range("Q4")
-        
-        GreatestTotalVolume.Value = MaxTotalVolume
+        lastRow = ws.Cells(Rows.Count, 9).End(xlUp).Row
             
-
+        PercentIncrease = ws.Cells(2, 11).Value
+        
+        PercentDecrease = ws.Cells(2, 11).Value
+    
+        GreatestTotalVolume = ws.Cells(2, 12).Value
+    
+        IncreaseTicker = ws.Cells(2, 9).Value
+    
+        DecreaseTicker = ws.Cells(2, 9).Value
+    
+        VolumeTicker = ws.Cells(2, 9).Value
+        
+            
+        For j = 3 To lastRow
+            
+            If ws.Cells(j, 11).Value > PercentIncrease Then
+                PercentIncrease = ws.Cells(j, 11).Value
+                IncreaseTicker = ws.Cells(j, 9).Value
+            End If
+            
+            If ws.Cells(j, 11).Value < PercentDecrease Then
+                PercentDecrease = ws.Cells(j, 11).Value
+                DecreaseTicker = ws.Cells(j, 9).Value
+            End If
+            
+            If ws.Cells(j, 12).Value > GreatestTotalVolume Then
+                GreatestTotalVolume = ws.Cells(j, 12).Value
+                VolumeTicker = ws.Cells(j, 9).Value
+            End If
+         
+        Next j
+        
+        ws.Cells(2, 16) = IncreaseTicker
+        ws.Cells(2, 17) = PercentIncrease
+        ws.Cells(3, 16) = DecreaseTicker
+        ws.Cells(3, 17) = PercentDecrease
+        ws.Cells(4, 16) = VolumeTicker
+        ws.Cells(4, 17) = GreatestTotalVolume
+        ws.Range("Q2:Q3").NumberFormat = "0.00%"
+    
+        
     Next ws
 
 End Sub
